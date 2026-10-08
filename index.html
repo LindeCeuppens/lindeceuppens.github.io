@@ -1,1 +1,104 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ALTIJD ONDERWEG - Homepage Prototype</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
+    body {
+      background-color: #050505;
+      color: #ffffff;
+      font-family: 'Impact', 'Arial Black', sans-serif;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      user-select: none;
+    }
+
+    /* Flitsend achtergrondeffect */
+    .flash-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #ffffff;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.05s ease;
+      z-index: 1;
+    }
+
+    .container {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      width: 90vw;
+      height: 80vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .sketch-slide {
+      position: absolute;
+      opacity: 0;
+      transform: scale(0.9);
+      transition: opacity 0.08s ease, transform 0.08s ease;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      line-height: 0.9;
+      text-transform: uppercase;
+      letter-spacing: -1px;
+    }
+
+    .sketch-slide.active {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    /* Stijlen geïnspireerd door de diverse schetsen */
+    
+    /* Layout 1: Eén lange regel */
+    .style-1 {
+      font-size: 5vw;
+      letter-spacing: 15px;
+      color: #ffffff;
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+    }
+
+    /* Layout 2: Enkel ONDERWEG x2 */
+    .style-2 {
+      font-size: 8vw;
+      color: #ff0055;
+      transform: skewX(-10deg);
+    }
+
+    /* Layout 3: Stapel ALTIJD / ONDERWEG met omlijnde tekst */
+    .style-3 {
+      font-size: 9vw;
+      color: transparent;
+      -webkit-text-stroke: 2px #00e5ff;
+    }
+
+    /* Layout 4: Klassiek blok */
+    .style-4 {
+      font-size: 10vw;
+      color: #ffe600;
+      text-shadow: 5px 5px 0px #ff0055;
+    }
+
+    /* Layout 5: Speels/handgeschreven gevoel */
+    .style-5 {
+      font-family: 'Courier
