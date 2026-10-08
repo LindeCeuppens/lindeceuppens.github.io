@@ -1,131 +1,46 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="nl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Beginpagina - Flitsend</title>
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Altijd Onderweg</title>
+  <meta name="description" content="Van hier naar daar. Kilometers, minuten, uren en tussenstops.">
 
-    body {
-      height: 100vh;
-      width: 100vw;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      overflow: hidden;
-      user-select: none;
-      transition: background-color 0.05s ease, color 0.05s ease;
-    }
+  <!-- Lettertype: Instrument Serif (regulier + cursief) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 
-    /* Thema 1: Blauwe achtergrond, witte tekst */
-    body.theme-blue {
-      background-color: #0000ff;
-      color: #ffffff;
-    }
-
-    /* Thema 2: Witte achtergrond, blauwe tekst */
-    body.theme-white {
-      background-color: #ffffff;
-      color: #0000ff;
-    }
-
-    /* Container voor de titel/teksten */
-    .title-container {
-      text-align: center;
-      margin-bottom: 50px;
-      line-height: 0.9;
-      text-transform: uppercase;
-    }
-
-    .main-title {
-      font-size: 10vw;
-      letter-spacing: -2px;
-      transition: font-family 0.05s ease;
-    }
-
-    .subtitle {
-      font-size: 4vw;
-      margin-top: 10px;
-    }
-
-    /* Stijl voor de 'VERTREK' link / knop */
-    .btn-vertrek {
-      display: inline-block;
-      text-decoration: none;
-      font-size: 5vw;
-      font-weight: bold;
-      padding: 15px 40px;
-      border: 6px solid currentColor;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      cursor: pointer;
-      transition: transform 0.1s ease, background-color 0.05s ease, color 0.05s ease;
-    }
-
-    /* Hover effect op de knop */
-    .btn-vertrek:hover {
-      transform: scale(1.1) rotate(-2deg);
-    }
-
-    body.theme-blue .btn-vertrek {
-      color: #ffffff;
-      border-color: #ffffff;
-    }
-
-    body.theme-white .btn-vertrek {
-      color: #0000ff;
-      border-color: #0000ff;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
-<body class="theme-blue" id="body">
+<body>
+  <main class="home">
 
-  <div class="title-container">
-    <h1 class="main-title" id="flashingText">ALTIJD ONDERWEG</h1>
-  </div>
+    <h1 class="titel">
+      <img src="assets/titel.svg" alt="Altijd Onderweg">
+    </h1>
 
-  <!-- Klikbare knop die naar de tweede (voorlopig lege) pagina leidt -->
-  <a href="vertrek.html" class="btn-vertrek" id="vertrekBtn">VERTREK</a>
+    <div class="intro">
+      <p class="regel regel--gespreid">
+        <span>Van</span><span>-&gt;</span><span>hier</span><span>-&gt;</span><span>naar</span><span>-&gt;</span><span>daar.</span>
+      </p>
+      <p class="regel regel--gespreid">
+        <span>Kilometers,</span><span>minuten,</span><span>uren</span><span>en</span><span>tussenstops.</span>
+      </p>
+      <p class="regel regel--gespreid">
+        <span>Deze</span><span>website</span><span>brengt</span><span>mijn</span><span>verplaatsingen</span><span>in</span><span>kaart:</span>
+      </p>
+      <p class="regel regel--vol">
+        waar ik vertrek, waar ik naartoe ga, hoeveel kilometer ik afleg, hoeveel tijd ik onderweg ben, wat ik onderweg tegenkom,..
+      </p>
+    </div>
 
-  <script>
-    const body = document.getElementById('body');
-    const flashingText = document.getElementById('flashingText');
-    const vertrekBtn = document.getElementById('vertrekBtn');
+    <a class="vertrek" href="vertrek.html">
+      <span class="vertrek__woord">VERTREK -&gt;</span>
+    </a>
 
-    // Lijst met verschillende lettertypes die elkaar afwisselen
-    const fonts = [
-      "'Impact', 'Arial Black', sans-serif",
-      "'Courier New', Courier, monospace",
-      "'Times New Roman', Times, serif",
-      "'Arial', sans-serif",
-      "'Trebuchet MS', sans-serif",
-      "'Georgia', serif",
-      "Comic Sans MS, cursive, sans-serif"
-    ];
+  </main>
 
-    let isBlue = true;
-
-    function flashEffect() {
-      // 1. Wissel tussen blauwe en witte achtergrond
-      if (isBlue) {
-        body.classList.remove('theme-blue');
-        body.classList.add('theme-white');
-      } else {
-        body.classList.remove('theme-white');
-        body.classList.add('theme-blue');
-      }
-      isBlue = !isBlue;
-
-      // 2. Kies een willekeurig lettertype uit de lijst
-      const randomFont = fonts[Math.floor(Math.random() * fonts.length)];
-      flashingText.style.fontFamily = randomFont;
-      vertrekBtn.style.fontFamily = randomFont;
-    }
-
-    // Laat de pagina elke 150 milliseconden flitsen (pas dit getal aan als je het
+  <script src="script.js"></script>
+</body>
+</html>
