@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactieve Reisschema Blokken</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #f5f5f5;
+      font-family: Arial, Helvetica, sans-serif;
+      min-height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Stijl van elk individueel blauw blok */
+    .card {
+      position: absolute;
+      background-color: #0000ff; /* Felblauw */
+      color: #ffffff;
+      padding: 6px 14px 10px 14px;
+      cursor: grab;
+      user-select: none;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+      display: inline-block;
+      white-space: nowrap;
+      transition: transform 0.05s ease, box-shadow 0.2s ease;
+    }
+
+    .card:active {
+      cursor: grabbing;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+      z-index: 1000 !important; /* Breng de geopende/gesleepte kaart naar voren */
+    }
+
+    /* Bovenste rij met datum en vervoermiddel */
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      font-weight: normal;
+      letter-spacing: 0.5px;
+      margin-bottom: 2px;
+      opacity: 0.9;
+      font-family: 'Times New Roman', Times, serif; /* Subtiel schreef-lettertype voor de datum/vervoermiddel */
+      text-transform: uppercase;
+    }
+
+    /* Grote route-tekst */
+    .card-route {
+      font-family: 'Impact', 'Arial Black', sans-serif;
+      font-size: 32px;
+      line-height: 1;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .card-route span.arrow {
+      font-family: Arial, sans-serif;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Canvas waarin alle blokken met initiële posities (x, y) staan -->
+  <div id="board"></div>
+
+  <script>
+    // Data uit de afbeelding
+    const cardsData = [
+      { date: "VRIJ 02/10", type: "FIETS", route: "KOT → SCHOOL", x: 170, y: 20 },
+      { date: "VRIJ 02/10", type: "FIETS", route: "SCHOOL → KOT", x: 85, y: 90 },
+      { date: "VRIJ 02/10", type: "TE VOET", route: "KOT → STATION GENT-SINT-PIETERS", x: 170, y: 160 },
+      { date: "VRIJ 02/10", type: "TREIN", route: "GENT-SINT-PIETERS → LEUVEN", x: 400, y: 230 },
+      { date: "VRIJ 02/10", type: "FIETS", route: "LEUVEN STATION → HUIS", x: 240, y: 300 },
+      { date: "ZO 04/10", type: "FIETS", route: "HUIS → LEUVEN STATION", x: 415, y: 370 },
+      { date: "ZO 04/10", type: "TREIN", route: "LEUVEN → GENT-SINT-PIETERS", x: 170, y: 440 },
+      { date: "ZO 04/10", type: "TE VOET", route: "STATION GENT-SINT-PIETERS → KOT", x: 310, y: 510 },
+      { date: "MA 05/10", type: "FIETS", route: "KOT → SCHOOL", x: 190, y: 580 },
+      { date: "MA 05/10", type: "FIETS", route: "SCHOOL → KOT", x: 305, y: 650 },
+      { date: "DI 06/10", type: "HARDLOPEN", route: "KOT → CITADELPARK → KOT", x: 345, y: 720 },
+      { date: "WOE 07/10", type: "FIETS", route: "HUIS → SCOUTS", x: 220, y: 790 }
+    ];
+
+    const board = document.getElementById('board');
+    let highestZIndex = 1;
+
+    // Maak alle kaarten aan op het scherm
+    cardsData.forEach((data, index) => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.style.left = `${data.x}px`;
+      card.style.top = `${data.y}px`;
+      card.style.zIndex = index + 1;
+
+      // HTML structuur per blok
+      card.innerHTML = `
+        <div class="card-header">
+          <span>${data.date}</span>
+          <span>${data.type}</span>
+        </div>
+        <div class="card-route">${data.route.replace('→', '<span class="arrow">→</span>')}</div>
+      `;
+
+      board.appendChild(card);
+      makeDraggable(card);
+    });
+
+    // Sleep-functionaliteit (werkt zowel met muis als met touch/touchscreen)
+    function makeDraggable(element) {
+      let active = false;
+      let currentX;
+      let currentY;
+      let initialX;
+      let initialY;
+      let xOffset = 0;
+      let yOffset = 0;
+
+      element.addEventListener("mousedown", dragStart);
+      element.addEventListener("touchstart", dragStart, { passive: false });
+
+      document.addEventListener("mouseup", dragEnd);
+      document.addEventListener("touchend", dragEnd);
+
+      document.addEventListener("mousemove", drag);
+      document.addEventListener("touchmove", drag, { passive: false });
+
+      function dragStart(e) {
+        // Breng het gesleepte element naar de voorgrond
+        highestZIndex++;
+        element.style.zIndex = highestZIndex;
+
+        const clientX = e.type === "touchstart" ? e.touches[0].clientX : e.clientX;
+        const clientY = e.type === "touchstart" ? e.touches[0].clientY : e.clientY;
+
+        // Haal de huidige positie op uit het style-attribuut
+        xOffset = parseInt(element.style.left) || 0;
+        yOffset = parseInt(element.style.top) || 0;
+
+        initialX = clientX - xOffset;
+        initialY = clientY - yOffset;
+
+        active = true;
+      }
+
+      function dragEnd() {
+        active = false;
+      }
+
+      function drag(e) {
+        if (!active) return;
+        
+        e.preventDefault();
+
+        const clientX = e.type === "touchmove" ? e.touches[0].clientX : e.clientX;
+        const clientY = e.type === "touchmove" ? e.touches[0].clientY : e.clientY;
+
+        currentX = clientX - initialX;
+        currentY = clientY - initialY;
+
+        element.style.left = `${currentX}px`;
+        element.style.top = `${currentY}px`;
+      }
+    }
+  </script>
+</body>
+</html>
